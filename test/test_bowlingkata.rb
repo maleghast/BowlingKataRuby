@@ -34,5 +34,11 @@ class BowlingKataTest < Test::Unit::TestCase
     11.times{ game.addframe(Frame.new(3,7,nil))}
     assert(game.frames.length == 10)
   end
+  
+  def testScoreCorrectAfterOneFrame
+    game = Game.new
+    game.addframe(Frame.new(2,6,nil))
+    assert_equal(Game.score, [8])
+  end
     
 end
