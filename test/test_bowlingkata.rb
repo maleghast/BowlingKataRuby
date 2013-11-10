@@ -7,20 +7,19 @@ class BowlingKataTest < Test::Unit::TestCase
   
   def testGameIsProperlyInitialised
     game = Game.new
-    assert_equal([], game.frames)
+    assert_equal(game.frames, [])
   end
   
   def testBlankFrameHasAppropriateData
     frame = Frame.new(0,0)
     assert(frame.firstball == 0)
-    assert(frame.score == 0)
   end
   
   def testAddingFrameToGame
     game = Game.new
     assert_equal([], game.frames)
     game.addframe(Frame.new(2,6))
-    assert_equal(2, game.frames[0].firstball)
+    assert_equal(game.frames[0].firstball, 2)
   end
   
   def testAddingTenFramesToGame
@@ -35,10 +34,10 @@ class BowlingKataTest < Test::Unit::TestCase
     assert(game.frames.length == 10)
   end
   
-  def testScoreCorrectAfterOneFrame
+  def testScoreCorrectAfterOneFrameNoStrikeOrSpare
     game = Game.new
     game.addframe(Frame.new(2,6))
-    assert_equal(Game.score, {scorebyframes: [8], total: 8})
+    assert_equal({scorebyframe: [8], total: 8}, game.score)
   end
-    
+      
 end

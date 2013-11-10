@@ -11,16 +11,27 @@ class Game
       @frames << frame
     end
   end
-  
-  def scoresheet
-    @scoresheet
+
+  def score
+    scoresheet = Hash.new
+    scorebyframe = Array.new
+    @frames.each_with_index do |frame, index|
+      if frame.strike || frame.spare
+
+      else
+        scorebyframe << frame.firstball + frame.secondball + frame.thirdball
+      end
+    end
+    scoresheet[:scorebyframe] = scorebyframe
+    scoresheet[:total] = scorebyframe.reduce(:+)
+    scoresheet
   end
   
 end
 
 class Frame
   
-  attr_reader :firstball, :secondball, :thirdball, :score
+  attr_reader :firstball, :secondball, :thirdball, :strike, :spare
   
   def initialize(firstball, secondball, thirdball = nil)
     @firstball = firstball
@@ -28,7 +39,6 @@ class Frame
     @thirdball = (thirdball.nil?) ? 0 : thirdball
     @strike = (firstball == 10) ? true : false
     @spare = (firstball != 10 && (firstball + secondball == 10)) ? true : false
-    @score = 0
   end
   
 end
