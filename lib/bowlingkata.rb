@@ -2,46 +2,47 @@ class Game
   
   attr_reader :frames
   
+  MAX_NUM_FRAMES = 10
+  
   def initialize
     @frames = Array.new
   end
   
   def addframe(frame)
-    unless @frames.length > 9
+    unless @frames.length >= MAX_NUM_FRAMES
       @frames << frame
     end
   end
-
+  
+  def calculatebonus(frame, index, basicframescore)
+    if index + 1 == @frames.length
+      basicframescore
+    else
+      if frame.strike
+        if @frames[index + 1].strike
+          if index + 2 >= @frames.length
+            basicframescore + @frames[index + 1].firstball + @frames[index + 1].secondball
+          else
+            basicframescore + @frames[index + 1].firstball + @frames[index + 2].firstball
+          end
+        else
+          basicframescore + @frames[index + 1].firstball + @frames[index + 1].secondball
+        end
+      else
+        basicframescore + @frames[index + 1].firstball
+      end
+    end
+  end
+  
   def score
     scoresheet = Hash.new
     scorebyframe = Array.new
     @frames.each_with_index do |frame, index|
+      basicframescore = frame.firstball + frame.secondball + frame.thirdball
       if frame.strike || frame.spare
-        if frame.strike
-          if index == @frames.length - 1
-            scorebyframe << frame.firstball + frame.secondball + frame.thirdball
-          else
-            if @frames[index + 1].strike
-              framescore = frame.firstball + frame.secondball + frame.thirdball + @frames[index + 1].firstball
-              if @frames[index + 2].nil?
-                framescore = framescore + @frames[index + 1].secondball
-              else
-                framescore = framescore + @frames[index + 2].firstball
-              end
-            else
-              framescore = frame.firstball + frame.secondball + frame.thirdball + @frames[index + 1].firstball + @frames[index + 1].secondball
-            end
-            scorebyframe << framescore
-          end
-        else
-          if index == @frames.length - 1
-            scorebyframe << frame.firstball + frame.secondball + frame.thirdball
-          else
-            scorebyframe << frame.firstball + frame.secondball + frame.thirdball + @frames[index + 1].firstball
-          end
-        end
+        scorebyframe << calculatebonus(frame, index, basicframescore)
       else
-        scorebyframe << frame.firstball + frame.secondball + frame.thirdball
+      scorebyframe << basicframescore
       end
     end
     scoresheet[:scorebyframe] = scorebyframe
