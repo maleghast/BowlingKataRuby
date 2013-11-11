@@ -17,7 +17,29 @@ class Game
     scorebyframe = Array.new
     @frames.each_with_index do |frame, index|
       if frame.strike || frame.spare
-
+        if frame.strike
+          if index == @frames.length - 1
+            scorebyframe << frame.firstball + frame.secondball + frame.thirdball
+          else
+            if @frames[index + 1].strike
+              framescore = frame.firstball + frame.secondball + frame.thirdball + @frames[index + 1].firstball
+              if @frames[index + 2].nil?
+                framescore = framescore + @frames[index + 1].secondball
+              else
+                framescore = framescore + @frames[index + 2].firstball
+              end
+            else
+              framescore = frame.firstball + frame.secondball + frame.thirdball + @frames[index + 1].firstball + @frames[index + 1].secondball
+            end
+            scorebyframe << framescore
+          end
+        else
+          if index == @frames.length - 1
+            scorebyframe << frame.firstball + frame.secondball + frame.thirdball
+          else
+            scorebyframe << frame.firstball + frame.secondball + frame.thirdball + @frames[index + 1].firstball
+          end
+        end
       else
         scorebyframe << frame.firstball + frame.secondball + frame.thirdball
       end
